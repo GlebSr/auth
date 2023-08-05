@@ -2,7 +2,7 @@ package teststorage
 
 import (
 	"auth/internal/authApp/model"
-	"errors"
+	"auth/internal/authApp/storage"
 	"time"
 )
 
@@ -25,7 +25,7 @@ func (r *RefreshTokenRepository) FindByToken(token string) (*model.RefreshToken,
 	if ok {
 		return t, nil
 	}
-	return nil, errors.New("token not exist") //TODO new err
+	return nil, storage.ErrTokenDoesNotExist
 }
 
 func (r *RefreshTokenRepository) ClearExpired() error {
@@ -43,7 +43,7 @@ func (r *RefreshTokenRepository) Delete(token string) error {
 		delete(r.Tokens, token)
 		return nil
 	}
-	return errors.New("token not exist") //TODO new err
+	return storage.ErrTokenDoesNotExist
 }
 
 func (r *RefreshTokenRepository) DeleteAll(id int) error {
@@ -58,7 +58,7 @@ func (r *RefreshTokenRepository) DeleteAll(id int) error {
 func (r *RefreshTokenRepository) Create(token *model.RefreshToken) error {
 	_, ok := r.Tokens[token.Token]
 	if ok {
-		return errors.New("token exist") //TODO new err
+		return storage.ErrTokenAlreadyExist
 	}
 	r.Tokens[token.Token] = token
 	return nil

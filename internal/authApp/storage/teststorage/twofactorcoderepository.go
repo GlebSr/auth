@@ -2,7 +2,7 @@ package teststorage
 
 import (
 	"auth/internal/authApp/model"
-	"errors"
+	"auth/internal/authApp/storage"
 )
 
 type TwoFactorRepository struct {
@@ -14,13 +14,13 @@ func (r *TwoFactorRepository) FindByUserId(id int) (*model.TwoFactorCode, error)
 	if ok {
 		return code, nil
 	}
-	return nil, errors.New("code not exist") //TODO new err
+	return nil, storage.ErrTokenDoesNotExist
 }
 
 func (r *TwoFactorRepository) Create(code *model.TwoFactorCode) error {
 	_, ok := r.Codes[code.UserId]
 	if ok {
-		return errors.New("code exist") //TODO new err
+		return storage.ErrTokenAlreadyExist
 	}
 	r.Codes[code.UserId] = code
 	return nil
@@ -32,5 +32,5 @@ func (r *TwoFactorRepository) Delete(id int) error {
 		delete(r.Codes, id)
 		return nil
 	}
-	return errors.New("code not exist") //TODO new err
+	return storage.ErrTokenDoesNotExist
 }

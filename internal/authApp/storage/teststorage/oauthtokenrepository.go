@@ -2,7 +2,7 @@ package teststorage
 
 import (
 	"auth/internal/authApp/model"
-	"errors"
+	"auth/internal/authApp/storage"
 )
 
 type OauthTokenRepository struct {
@@ -28,7 +28,7 @@ func (r *OauthTokenRepository) Create(token *model.OauthToken) error {
 	}
 	for _, t := range tokens {
 		if t.UserId == token.UserId && t.Service == token.Service && t.IsRefresh == token.IsRefresh {
-			return errors.New("token exist") //TODO new err
+			return storage.ErrTokenAlreadyExist
 		}
 	}
 	r.Tokens = append(r.Tokens, token)
@@ -49,7 +49,7 @@ func (r *OauthTokenRepository) Update(token *model.OauthToken) error {
 			return nil
 		}
 	}
-	return errors.New("token not exist") //TODO new err
+	return storage.ErrTokenDoesNotExist
 }
 
 func (r *OauthTokenRepository) Delete(token *model.OauthToken) error {
@@ -64,7 +64,7 @@ func (r *OauthTokenRepository) Delete(token *model.OauthToken) error {
 		}
 	}
 	if !fl {
-		return errors.New("user not exist") //TODO new err
+		return storage.ErrTokenDoesNotExist
 	}
 	r.Tokens = r.Tokens[:len(r.Tokens)-1]
 	return nil

@@ -2,7 +2,7 @@ package teststorage
 
 import (
 	"auth/internal/authApp/model"
-	"errors"
+	"auth/internal/authApp/storage"
 )
 
 type UserRepository struct {
@@ -15,7 +15,7 @@ func (r *UserRepository) Create(user *model.User) error {
 	}
 	for _, us := range r.Users {
 		if us.Email == user.Email {
-			return errors.New("user exist") //TODO new error
+			return storage.ErrUserAlreadyExist
 		}
 	}
 	user.Id = len(r.Users)
@@ -38,7 +38,7 @@ func (r *UserRepository) FindById(id int) (*model.User, error) {
 	if ok {
 		return user, nil
 	}
-	return nil, errors.New("user doesnt exist") //TODO new error
+	return nil, storage.ErrUserDoesNotExist
 }
 
 func (r *UserRepository) FindByEmail(email string) (*model.User, error) {
@@ -47,7 +47,7 @@ func (r *UserRepository) FindByEmail(email string) (*model.User, error) {
 			return us, nil
 		}
 	}
-	return nil, errors.New("user doesnt exist") //TODO new error
+	return nil, storage.ErrUserDoesNotExist
 }
 
 func (r *UserRepository) FindByOauthID(serviceName string, id string) (*model.User, error) {
@@ -77,7 +77,7 @@ func (r *UserRepository) FindByOauthID(serviceName string, id string) (*model.Us
 			}
 		}
 	}
-	return nil, errors.New("service not supported") //TODO new error
+	return nil, storage.ErrServiceNotSupported
 }
 
 func (r *UserRepository) Update(user *model.User) error {
@@ -86,7 +86,7 @@ func (r *UserRepository) Update(user *model.User) error {
 	}
 	_, ok := r.Users[user.Id]
 	if !ok {
-		return errors.New("user doesnt exist") //TODO new error
+		return storage.ErrUserDoesNotExist
 	}
 	if err := user.EncryptPassword(); err != nil {
 		return err
@@ -99,7 +99,7 @@ func (r *UserRepository) Update(user *model.User) error {
 func (r *UserRepository) Delete(id int) error {
 	_, ok := r.Users[id]
 	if !ok {
-		return errors.New("user doesnt exist") //TODO new error
+		return storage.ErrUserDoesNotExist
 	}
 	delete(r.Users, id)
 	return nil
