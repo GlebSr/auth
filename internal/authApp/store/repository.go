@@ -6,7 +6,7 @@ type UserRepository interface {
 	Create(*model.User) error
 	FindById(int) (*model.User, error)
 	FindByEmail(string) (*model.User, error)
-	FindByOauthID(serviceName string, Id string) (*model.User, error)
+	FindByOauthID(serviceName string, id string) (*model.User, error)
 	Update(*model.User) error
 	Delete(int) error
 }
