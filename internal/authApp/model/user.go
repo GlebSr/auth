@@ -5,6 +5,7 @@ type User struct {
 	Email             string
 	Password          string
 	EncryptedPassword string
+	Enabled2FA        bool
 
 	GoogleId string
 	VkId     string

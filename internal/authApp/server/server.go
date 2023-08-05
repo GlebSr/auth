@@ -5,10 +5,22 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type Server struct {
-	router            mux.Router
-	userStore         store.UserStore
-	refreshTokenStore store.RefreshTokenStore
-	oauthTokenStore   store.OauthTokenStore
-	twoFactorStore    store.TwoFactorStore
+type server struct {
+	router *mux.Router
+	store  store.Store
+}
+
+type ctxKey int
+
+func NewServer(store store.Store) *server {
+	s := &server{
+		router: mux.NewRouter(),
+		store:  store,
+	}
+	s.configureRouter()
+	return s
+}
+
+func (s *server) configureRouter() {
+
 }
