@@ -1,19 +1,19 @@
-package teststore
+package teststorage
 
 import (
 	"auth/internal/authApp/model"
-	"auth/internal/authApp/store"
+	"auth/internal/authApp/storage"
 )
 
-type UserStore struct {
+type UserStorage struct {
 	repository *UserRepository
 }
 
-func NewUserStore() store.UserStore {
-	return &UserStore{}
+func NewUserStorage() storage.UserStorage {
+	return &UserStorage{}
 }
 
-func (s *UserStore) User() store.UserRepository {
+func (s *UserStorage) User() storage.UserRepository {
 	if s.repository != nil {
 		return s.repository
 	}

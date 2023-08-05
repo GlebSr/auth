@@ -1,19 +1,19 @@
-package teststore
+package teststorage
 
 import (
 	"auth/internal/authApp/model"
-	"auth/internal/authApp/store"
+	"auth/internal/authApp/storage"
 )
 
-type TwoFactorStore struct {
+type TwoFactorStorage struct {
 	repository *TwoFactorRepository
 }
 
-func NewTwoFactorStore() store.TwoFactorStore {
-	return &TwoFactorStore{}
+func NewTwoFactorStorage() storage.TwoFactorStorage {
+	return &TwoFactorStorage{}
 }
 
-func (t *TwoFactorStore) TwoFactorCode() store.TwoFactorRepository {
+func (t *TwoFactorStorage) TwoFactorCode() storage.TwoFactorRepository {
 	if t.repository != nil {
 		return t.repository
 	}

@@ -1,4 +1,4 @@
-package teststore
+package teststorage
 
 import (
 	"auth/internal/authApp/model"
