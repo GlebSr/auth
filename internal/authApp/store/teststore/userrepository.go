@@ -6,11 +6,10 @@ import (
 )
 
 type UserRepository struct {
-	Users map[int]model.User
+	Users map[int]*model.User
 }
 
 func (r *UserRepository) Create(user *model.User) error {
-
 	if err := user.Validate(); err != nil {
 		return err
 	}
@@ -30,14 +29,14 @@ func (r *UserRepository) Create(user *model.User) error {
 		return err
 	}
 	user.Sanitize()
-	r.Users[user.Id] = *user
+	r.Users[user.Id] = user
 	return nil
 }
 
 func (r *UserRepository) FindById(id int) (*model.User, error) {
 	user, ok := r.Users[id]
 	if ok {
-		return &user, nil
+		return user, nil
 	}
 	return nil, errors.New("user doesnt exist") //TODO new error
 }
@@ -45,7 +44,7 @@ func (r *UserRepository) FindById(id int) (*model.User, error) {
 func (r *UserRepository) FindByEmail(email string) (*model.User, error) {
 	for _, us := range r.Users {
 		if us.Email == email {
-			return &us, nil
+			return us, nil
 		}
 	}
 	return nil, errors.New("user doesnt exist") //TODO new error
@@ -56,25 +55,25 @@ func (r *UserRepository) FindByOauthID(serviceName string, id string) (*model.Us
 	case "Google":
 		for _, us := range r.Users {
 			if us.GoogleId == id {
-				return &us, nil
+				return us, nil
 			}
 		}
 	case "Yandex":
 		for _, us := range r.Users {
 			if us.YandexId == id {
-				return &us, nil
+				return us, nil
 			}
 		}
 	case "Github":
 		for _, us := range r.Users {
 			if us.GithubId == id {
-				return &us, nil
+				return us, nil
 			}
 		}
 	case "Vk":
 		for _, us := range r.Users {
 			if us.VkId == id {
-				return &us, nil
+				return us, nil
 			}
 		}
 	}
@@ -93,7 +92,7 @@ func (r *UserRepository) Update(user *model.User) error {
 		return err
 	}
 	user.Sanitize()
-	r.Users[user.Id] = *user
+	r.Users[user.Id] = user
 	return nil
 }
 

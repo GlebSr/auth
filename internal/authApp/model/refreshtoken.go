@@ -3,7 +3,9 @@ package model
 import "time"
 
 type RefreshToken struct {
+	Token  string
 	UserId int
-	token  string
-	expiry time.Time
+	Expiry time.Time
 }
+
+//TODO token generator

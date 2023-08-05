@@ -9,7 +9,7 @@ type UserStore struct {
 	repository *UserRepository
 }
 
-func NewUserStore() *UserStore {
+func NewUserStore() store.UserStore {
 	return &UserStore{}
 }
 
@@ -18,7 +18,7 @@ func (s *UserStore) User() store.UserRepository {
 		return s.repository
 	}
 	s.repository = &UserRepository{
-		Users: make(map[int]model.User),
+		Users: make(map[int]*model.User),
 	}
 	return s.repository
 }
