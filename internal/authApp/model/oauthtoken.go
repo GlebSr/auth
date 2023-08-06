@@ -6,7 +6,7 @@ import (
 )
 
 type OauthToken struct {
-	UserId    int
+	UserId    string
 	Service   string
 	IsRefresh bool
 	Token     string
@@ -14,7 +14,7 @@ type OauthToken struct {
 }
 
 func (t *OauthToken) Validate() error {
-	if (t.UserId == 0 || len(t.Token) == 0 || time.Now().After(t.expire)) ||
+	if (len(t.UserId) == 0 || len(t.Token) == 0 || time.Now().After(t.expire)) ||
 		t.Service != "Google" && t.Service != "Yandex" && t.Service != "Vk" && t.Service != "Github" {
 		return errors.New("bad validation") //TODO new err
 	}

@@ -9,7 +9,7 @@ type OauthTokenRepository struct {
 	Tokens []*model.OauthToken
 }
 
-func (r *OauthTokenRepository) FindByUserId(id int) ([]*model.OauthToken, error) {
+func (r *OauthTokenRepository) FindByUserId(id string) ([]*model.OauthToken, error) {
 	users := make([]*model.OauthToken, 0)
 	for _, token := range r.Tokens {
 		if token.UserId == id {
@@ -70,7 +70,7 @@ func (r *OauthTokenRepository) Delete(token *model.OauthToken) error {
 	return nil
 }
 
-func (r *OauthTokenRepository) FindByUserIdAndService(id int, service string) ([]*model.OauthToken, error) {
+func (r *OauthTokenRepository) FindByUserIdAndService(id string, service string) ([]*model.OauthToken, error) {
 	users := make([]*model.OauthToken, 0)
 	for _, token := range r.Tokens {
 		if token.UserId == id && token.Service == service {

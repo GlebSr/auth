@@ -18,7 +18,7 @@ func (t *TwoFactorStorage) TwoFactorCode() storage.TwoFactorRepository {
 		return t.repository
 	}
 	t.repository = &TwoFactorRepository{
-		Codes: make(map[int]*model.TwoFactorCode),
+		Codes: make(map[string]*model.TwoFactorCode),
 	}
 	return t.repository
 }

@@ -18,7 +18,7 @@ func (s *UserStorage) User() storage.UserRepository {
 		return s.repository
 	}
 	s.repository = &UserRepository{
-		Users: make(map[int]*model.User),
+		Users: make(map[string]*model.User),
 	}
 	return s.repository
 }

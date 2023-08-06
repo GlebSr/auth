@@ -6,10 +6,10 @@ import (
 )
 
 type TwoFactorRepository struct {
-	Codes map[int]*model.TwoFactorCode
+	Codes map[string]*model.TwoFactorCode
 }
 
-func (r *TwoFactorRepository) FindByUserId(id int) (*model.TwoFactorCode, error) {
+func (r *TwoFactorRepository) FindByUserId(id string) (*model.TwoFactorCode, error) {
 	code, ok := r.Codes[id]
 	if ok {
 		return code, nil
@@ -26,7 +26,7 @@ func (r *TwoFactorRepository) Create(code *model.TwoFactorCode) error {
 	return nil
 }
 
-func (r *TwoFactorRepository) Delete(id int) error {
+func (r *TwoFactorRepository) Delete(id string) error {
 	_, ok := r.Codes[id]
 	if ok {
 		delete(r.Codes, id)

@@ -10,7 +10,7 @@ type RefreshTokenRepository struct {
 	Tokens map[string]*model.RefreshToken
 }
 
-func (r *RefreshTokenRepository) FindByUserId(id int) ([]*model.RefreshToken, error) {
+func (r *RefreshTokenRepository) FindByUserId(id string) ([]*model.RefreshToken, error) {
 	tokens := make([]*model.RefreshToken, 0)
 	for _, t := range r.Tokens {
 		if t.UserId == id {
@@ -46,7 +46,7 @@ func (r *RefreshTokenRepository) Delete(token string) error {
 	return storage.ErrTokenDoesNotExist
 }
 
-func (r *RefreshTokenRepository) DeleteAll(id int) error {
+func (r *RefreshTokenRepository) DeleteAll(id string) error {
 	for _, t := range r.Tokens {
 		if t.UserId == id {
 			delete(r.Tokens, t.Token)

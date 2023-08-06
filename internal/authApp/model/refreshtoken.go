@@ -1,11 +1,21 @@
 package model
 
-import "time"
+import (
+	"auth/internal/authApp/config"
+	"github.com/google/uuid"
+	"time"
+)
 
 type RefreshToken struct {
 	Token  string
-	UserId int
+	UserId string
 	Expiry time.Time
 }
 
-//TODO token generator
+func NewRefreshToken(UserId string) *RefreshToken {
+	return &RefreshToken{
+		Token:  uuid.New().String(),
+		UserId: UserId,
+		Expiry: time.Now().Add(config.RefreshTokenLifeTime),
+	}
+}

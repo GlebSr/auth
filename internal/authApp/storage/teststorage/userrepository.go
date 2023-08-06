@@ -3,10 +3,11 @@ package teststorage
 import (
 	"auth/internal/authApp/model"
 	"auth/internal/authApp/storage"
+	"github.com/google/uuid"
 )
 
 type UserRepository struct {
-	Users map[int]*model.User
+	Users map[string]*model.User
 }
 
 func (r *UserRepository) Create(user *model.User) error {
@@ -18,10 +19,10 @@ func (r *UserRepository) Create(user *model.User) error {
 			return storage.ErrUserAlreadyExist
 		}
 	}
-	user.Id = len(r.Users)
+	user.Id = uuid.New().String()
 	_, ok := r.Users[user.Id]
 	for ok {
-		user.Id += 1
+		user.Id = uuid.New().String()
 		_, ok = r.Users[user.Id]
 	}
 
@@ -33,7 +34,7 @@ func (r *UserRepository) Create(user *model.User) error {
 	return nil
 }
 
-func (r *UserRepository) FindById(id int) (*model.User, error) {
+func (r *UserRepository) FindById(id string) (*model.User, error) {
 	user, ok := r.Users[id]
 	if ok {
 		return user, nil
@@ -96,7 +97,7 @@ func (r *UserRepository) Update(user *model.User) error {
 	return nil
 }
 
-func (r *UserRepository) Delete(id int) error {
+func (r *UserRepository) Delete(id string) error {
 	_, ok := r.Users[id]
 	if !ok {
 		return storage.ErrUserDoesNotExist

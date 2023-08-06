@@ -8,7 +8,7 @@ import (
 )
 
 type User struct {
-	Id                int
+	Id                string
 	Email             string
 	Password          string
 	EncryptedPassword string
@@ -37,8 +37,9 @@ func (u *User) EncryptPassword() error {
 			return err //TODO new err
 		}
 		u.EncryptedPassword = string(enc)
+		return nil
 	}
-	return nil
+	return errors.New("empty password") //TODO new err
 }
 
 func (u *User) Sanitize() {
