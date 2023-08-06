@@ -17,7 +17,6 @@ func TestOauthToken_Validate(t *testing.T) {
 			token: func() *OauthToken {
 				tok := NewOauthToken(t)
 				tok.IsRefresh = true
-				tok.expire = time.Now().Add(time.Second * 30)
 				return tok
 			},
 			isValid: true,
@@ -27,7 +26,6 @@ func TestOauthToken_Validate(t *testing.T) {
 			token: func() *OauthToken {
 				tok := NewOauthToken(t)
 				tok.IsRefresh = false
-				tok.expire = time.Now().Add(time.Second * 30)
 				return tok
 			},
 			isValid: true,
@@ -37,7 +35,6 @@ func TestOauthToken_Validate(t *testing.T) {
 			token: func() *OauthToken {
 				tok := NewOauthToken(t)
 				tok.IsRefresh = true
-				tok.expire = time.Now().Add(time.Second * 30)
 				tok.Service = "invalid"
 				return tok
 			},
@@ -48,7 +45,6 @@ func TestOauthToken_Validate(t *testing.T) {
 			token: func() *OauthToken {
 				tok := NewOauthToken(t)
 				tok.IsRefresh = false
-				tok.expire = time.Now().Add(time.Second * 30)
 				tok.Service = "invalid"
 				return tok
 			},
@@ -99,7 +95,7 @@ func TestOauthToken_Validate(t *testing.T) {
 			token: func() *OauthToken {
 				tok := NewOauthToken(t)
 				tok.IsRefresh = true
-				tok.expire = time.Now()
+				tok.Expire = time.Now()
 				return tok
 			},
 			isValid: false,
@@ -109,7 +105,7 @@ func TestOauthToken_Validate(t *testing.T) {
 			token: func() *OauthToken {
 				tok := NewOauthToken(t)
 				tok.IsRefresh = false
-				tok.expire = time.Now()
+				tok.Expire = time.Now()
 				return tok
 			},
 			isValid: false,
@@ -124,4 +120,10 @@ func TestOauthToken_Validate(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestValidService(t *testing.T) {
+	assert.Equal(t, false, ValidService("Invalid"))
+	assert.Equal(t, false, ValidService("Vk"))
+	assert.Equal(t, true, ValidService("yandex"))
 }

@@ -1,6 +1,7 @@
 package model
 
 import (
+	"auth/internal/authApp/config"
 	"errors"
 	"time"
 )
@@ -10,13 +11,22 @@ type OauthToken struct {
 	Service   string
 	IsRefresh bool
 	Token     string
-	expire    time.Time
+	Expire    time.Time
 }
 
 func (t *OauthToken) Validate() error {
-	if (len(t.UserId) == 0 || len(t.Token) == 0 || time.Now().After(t.expire)) ||
-		t.Service != "Google" && t.Service != "Yandex" && t.Service != "Vk" && t.Service != "Github" {
+	if (len(t.UserId) == 0 || len(t.Token) == 0 ||
+		time.Now().After(t.Expire)) || !ValidService(t.Service) {
 		return errors.New("bad validation") //TODO new err
 	}
 	return nil
+}
+
+func ValidService(service string) bool {
+	for _, serv := range config.Services {
+		if serv == service {
+			return true
+		}
+	}
+	return false
 }

@@ -1,12 +1,16 @@
 package model
 
-import "testing"
+import (
+	"testing"
+	"time"
+)
 
 func NewOauthToken(t *testing.T) *OauthToken {
 	return &OauthToken{
-		UserId:  "testUser",
-		Service: "Yandex",
-		Token:   "testToken",
+		UserId:  "test_user",
+		Service: "yandex",
+		Token:   "test_token",
+		Expire:  time.Now().Add(time.Hour),
 	}
 }
 
@@ -15,9 +19,9 @@ func NewUser(t *testing.T) *User {
 		Id:                "test_id",
 		Email:             "test@test.test",
 		Password:          "password",
-		EncryptedPassword: "encrrypted_password",
+		EncryptedPassword: "encrypted_password",
 		Enabled2FA:        true,
-		GoogleId:          "Google_id",
+		GoogleId:          "google_id",
 		VkId:              "vk_id",
 		YandexId:          "yandex_id",
 		GithubId:          "github_id",

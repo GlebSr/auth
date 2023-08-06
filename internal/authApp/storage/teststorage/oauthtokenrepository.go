@@ -3,6 +3,7 @@ package teststorage
 import (
 	"auth/internal/authApp/model"
 	"auth/internal/authApp/storage"
+	"strings"
 )
 
 type OauthTokenRepository struct {
@@ -27,7 +28,7 @@ func (r *OauthTokenRepository) Create(token *model.OauthToken) error {
 		return err
 	}
 	for _, t := range tokens {
-		if t.UserId == token.UserId && t.Service == token.Service && t.IsRefresh == token.IsRefresh {
+		if t.IsRefresh == token.IsRefresh {
 			return storage.ErrTokenAlreadyExist
 		}
 	}
@@ -44,7 +45,7 @@ func (r *OauthTokenRepository) Update(token *model.OauthToken) error {
 		return err
 	}
 	for _, t := range tokens {
-		if t.UserId == token.UserId && t.Service == token.Service && t.IsRefresh == token.IsRefresh {
+		if t.IsRefresh == token.IsRefresh {
 			t = token
 			return nil
 		}
@@ -60,6 +61,7 @@ func (r *OauthTokenRepository) Delete(token *model.OauthToken) error {
 		} else {
 			if t.UserId == token.UserId && t.Service == token.Service && t.IsRefresh == token.IsRefresh {
 				fl = true
+				break
 			}
 		}
 	}
@@ -71,6 +73,10 @@ func (r *OauthTokenRepository) Delete(token *model.OauthToken) error {
 }
 
 func (r *OauthTokenRepository) FindByUserIdAndService(id string, service string) ([]*model.OauthToken, error) {
+	service = strings.ToLower(service)
+	if !model.ValidService(service) {
+		return nil, storage.ErrServiceNotSupported
+	}
 	users := make([]*model.OauthToken, 0)
 	for _, token := range r.Tokens {
 		if token.UserId == id && token.Service == service {

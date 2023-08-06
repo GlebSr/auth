@@ -4,6 +4,7 @@ import (
 	"auth/internal/authApp/model"
 	"auth/internal/authApp/storage"
 	"github.com/google/uuid"
+	"strings"
 )
 
 type UserRepository struct {
@@ -52,26 +53,27 @@ func (r *UserRepository) FindByEmail(email string) (*model.User, error) {
 }
 
 func (r *UserRepository) FindByOauthID(serviceName string, id string) (*model.User, error) {
+	serviceName = strings.ToLower(serviceName)
 	switch serviceName {
-	case "Google":
+	case "google":
 		for _, us := range r.Users {
 			if us.GoogleId == id {
 				return us, nil
 			}
 		}
-	case "Yandex":
+	case "yandex":
 		for _, us := range r.Users {
 			if us.YandexId == id {
 				return us, nil
 			}
 		}
-	case "Github":
+	case "github":
 		for _, us := range r.Users {
 			if us.GithubId == id {
 				return us, nil
 			}
 		}
-	case "Vk":
+	case "gk":
 		for _, us := range r.Users {
 			if us.VkId == id {
 				return us, nil
