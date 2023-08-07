@@ -5,6 +5,10 @@ import (
 	"time"
 )
 
+func init() {
+	time.Local = time.FixedZone("", 0)
+}
+
 func NewOauthToken(t *testing.T) *OauthToken {
 	return &OauthToken{
 		UserId:  "test_user",

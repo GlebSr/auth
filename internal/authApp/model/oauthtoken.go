@@ -7,11 +7,11 @@ import (
 )
 
 type OauthToken struct {
-	UserId    string
-	Service   string
-	IsRefresh bool
-	Token     string
-	Expire    time.Time
+	UserId    string    `db:"user_id"`
+	Service   string    `db:"service"`
+	IsRefresh bool      `db:"is_refresh"`
+	Token     string    `db:"token"`
+	Expire    time.Time `db:"expire"`
 }
 
 func (t *OauthToken) Validate() error {

@@ -16,7 +16,7 @@ type RefreshTokenRepository interface {
 	FindByToken(string) (*model.RefreshToken, error)
 	ClearExpired() error
 	Delete(string) error
-	DeleteAll(string) error
+	DeleteAllById(string) error
 	Create(*model.RefreshToken) error
 }
 

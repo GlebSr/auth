@@ -30,7 +30,7 @@ func (r *RefreshTokenRepository) FindByToken(token string) (*model.RefreshToken,
 
 func (r *RefreshTokenRepository) ClearExpired() error {
 	for _, t := range r.Tokens {
-		if time.Now().After(t.Expiry) {
+		if time.Now().After(t.Expire) {
 			delete(r.Tokens, t.Token)
 		}
 	}
@@ -46,7 +46,7 @@ func (r *RefreshTokenRepository) Delete(token string) error {
 	return storage.ErrTokenDoesNotExist
 }
 
-func (r *RefreshTokenRepository) DeleteAll(id string) error {
+func (r *RefreshTokenRepository) DeleteAllById(id string) error {
 	for _, t := range r.Tokens {
 		if t.UserId == id {
 			delete(r.Tokens, t.Token)

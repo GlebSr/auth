@@ -7,15 +7,15 @@ import (
 )
 
 type RefreshToken struct {
-	Token  string
-	UserId string
-	Expiry time.Time
+	Token  string    `db:"token"`
+	UserId string    `db:"user_id"`
+	Expire time.Time `db:"expire"`
 }
 
 func NewRefreshToken(UserId string) *RefreshToken {
 	return &RefreshToken{
 		Token:  uuid.New().String(),
 		UserId: UserId,
-		Expiry: time.Now().Add(config.RefreshTokenLifeTime),
+		Expire: time.Now().Add(config.RefreshTokenLifeTime),
 	}
 }
