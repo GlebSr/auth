@@ -24,7 +24,7 @@ type OauthTokenRepository interface {
 	FindByUserId(string) ([]*model.OauthToken, error)
 	Create(*model.OauthToken) error
 	Update(*model.OauthToken) error
-	Delete(*model.OauthToken) error
+	Delete(userId string, service string, isRefresh bool) error
 	FindByUserIdAndService(string, string) ([]*model.OauthToken, error)
 }
 

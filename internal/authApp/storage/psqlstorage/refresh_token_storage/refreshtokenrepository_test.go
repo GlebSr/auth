@@ -1,32 +1,41 @@
-package teststorage
+package psqlstorage
 
 import (
+	"auth/internal/authApp/config"
 	"auth/internal/authApp/model"
+	"auth/internal/authApp/storage/psqlstorage"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"testing"
 	"time"
 )
 
 func TestRefreshTokenRepository_FindByToken(t *testing.T) {
+	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	defer teardown("refresh")
 	rep := RefreshTokenRepository{
-		Tokens: make(map[string]*model.RefreshToken),
+		Tokens: db,
 	}
 	token := model.NewRefreshToken("user")
-	rep.Tokens[token.Token] = token
+	require.NoError(t, rep.Create(token))
 	t1, err := rep.FindByToken(token.Token)
 	assert.NoError(t, err)
-	assert.Equal(t, token, t1)
+	assert.Equal(t, token.UserId, t1.UserId)
+	assert.Equal(t, token.Token, t1.Token)
+	assert.True(t, t1.Expire.Equal(token.Expire))
 	t2, err := rep.FindByToken("invalid")
 	assert.Error(t, err)
 	assert.Nil(t, t2)
 }
 
 func TestRefreshTokenRepository_FindByUserId(t *testing.T) {
+	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	defer teardown("refresh")
 	rep := RefreshTokenRepository{
-		Tokens: make(map[string]*model.RefreshToken),
+		Tokens: db,
 	}
 	token := model.NewRefreshToken("user")
-	rep.Tokens[token.Token] = token
+	require.NoError(t, rep.Create(token))
 	t1, err := rep.FindByUserId("user")
 	assert.NoError(t, err)
 	assert.Equal(t, 1, len(t1))
@@ -36,58 +45,59 @@ func TestRefreshTokenRepository_FindByUserId(t *testing.T) {
 }
 
 func TestRefreshTokenRepository_Create(t *testing.T) {
+	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	defer teardown("refresh")
 	rep := RefreshTokenRepository{
-		Tokens: make(map[string]*model.RefreshToken),
+		Tokens: db,
 	}
 	token := model.NewRefreshToken("user")
-	err := rep.Create(token)
-	assert.NoError(t, err)
-	err = rep.Create(token)
-	assert.Error(t, err)
+	assert.NoError(t, rep.Create(token))
+	assert.Error(t, rep.Create(token))
 }
 
 func TestRefreshTokenRepository_Delete(t *testing.T) {
+	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	defer teardown("refresh")
 	rep := RefreshTokenRepository{
-		Tokens: make(map[string]*model.RefreshToken),
+		Tokens: db,
 	}
 	token := model.NewRefreshToken("user")
-	rep.Tokens[token.Token] = token
-	err := rep.Delete(token.Token)
-	assert.NoError(t, err)
-	err = rep.Delete(token.Token)
-	assert.Error(t, err)
+	require.NoError(t, rep.Create(token))
+	assert.NoError(t, rep.Delete(token.Token))
+	assert.Error(t, rep.Delete(token.Token))
 }
 
 func TestRefreshTokenRepository_DeleteAll(t *testing.T) {
+	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	defer teardown("refresh")
 	rep := RefreshTokenRepository{
-		Tokens: make(map[string]*model.RefreshToken),
+		Tokens: db,
 	}
 	token1 := model.NewRefreshToken("user")
 	token2 := model.NewRefreshToken("user")
-	rep.Tokens[token1.Token] = token1
-	rep.Tokens[token2.Token] = token2
+	require.NoError(t, rep.Create(token1))
+	require.NoError(t, rep.Create(token2))
 	tokens1, err := rep.FindByUserId("user")
 	assert.Equal(t, 2, len(tokens1))
 	assert.NoError(t, err)
-	err = rep.DeleteAllById("user")
-	assert.NoError(t, err)
+	assert.NoError(t, rep.DeleteAllById("user"))
 	tokens2, err := rep.FindByUserId("user")
 	assert.Equal(t, 0, len(tokens2))
 	assert.NoError(t, err)
-	err = rep.DeleteAllById("user")
-	assert.NoError(t, err)
+	assert.NoError(t, rep.DeleteAllById("user"))
 }
 
 func TestRefreshTokenRepository_ClearExpired(t *testing.T) {
+	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	defer teardown("refresh")
 	rep := RefreshTokenRepository{
-		Tokens: make(map[string]*model.RefreshToken),
+		Tokens: db,
 	}
 	token1 := model.NewRefreshToken("user")
-	token1.Expire = time.Now().In(time.FixedZone("", 0))
-	rep.Tokens[token1.Token] = token1
+	token1.Expire = time.Now()
+	require.NoError(t, rep.Create(token1))
 	time.Sleep(time.Millisecond)
-	err := rep.ClearExpired()
-	assert.NoError(t, err)
-	_, err = rep.FindByToken(token1.Token)
+	assert.NoError(t, rep.ClearExpired())
+	_, err := rep.FindByToken(token1.Token)
 	assert.Error(t, err)
 }

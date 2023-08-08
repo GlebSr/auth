@@ -53,13 +53,13 @@ func (r *OauthTokenRepository) Update(token *model.OauthToken) error {
 	return storage.ErrTokenDoesNotExist
 }
 
-func (r *OauthTokenRepository) Delete(token *model.OauthToken) error {
+func (r *OauthTokenRepository) Delete(userId string, service string, isRefresh bool) error {
 	fl := false
 	for pos, t := range r.Tokens {
 		if fl {
 			r.Tokens[pos-1] = t
 		} else {
-			if t.UserId == token.UserId && t.Service == token.Service && t.IsRefresh == token.IsRefresh {
+			if t.UserId == userId && t.Service == service && t.IsRefresh == isRefresh {
 				fl = true
 				break
 			}

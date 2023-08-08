@@ -1,14 +1,19 @@
-package teststorage
+package psqlstorage
 
 import (
+	"auth/internal/authApp/config"
 	"auth/internal/authApp/model"
+	"auth/internal/authApp/storage/psqlstorage"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"testing"
 )
 
 func TestOauthTokenRepository_Delete(t *testing.T) {
+	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	defer teardown("oauth")
 	rep := OauthTokenRepository{
-		Tokens: make([]*model.OauthToken, 0),
+		Tokens: db,
 	}
 	tests := []struct {
 		name    string
@@ -62,31 +67,36 @@ func TestOauthTokenRepository_Delete(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			rep.Tokens = append(rep.Tokens, model.NewOauthToken(t))
+			tok := model.NewOauthToken(t)
+			require.NoError(t, rep.Create(tok))
 			if test.isValid {
-				assert.NoError(t, rep.Delete(test.token()))
+				assert.NoError(t, rep.Delete(test.token().UserId, test.token().Service, test.token().IsRefresh))
 			} else {
-				assert.Error(t, rep.Delete(test.token()))
+				assert.Error(t, rep.Delete(test.token().UserId, test.token().Service, test.token().IsRefresh))
+				assert.NoError(t, rep.Delete(tok.UserId, tok.Service, tok.IsRefresh))
 			}
 		})
 	}
 }
 
 func TestOauthTokenRepository_Delete2(t *testing.T) {
+	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	defer teardown("oauth")
 	rep := OauthTokenRepository{
-		Tokens: make([]*model.OauthToken, 0),
+		Tokens: db,
 	}
-	rep.Tokens = append(rep.Tokens, model.NewOauthToken(t))
-	assert.NoError(t, rep.Delete(model.NewOauthToken(t)))
-	assert.Error(t, rep.Delete(model.NewOauthToken(t)))
+	user := model.NewOauthToken(t)
+	require.NoError(t, rep.Create(user))
+	assert.NoError(t, rep.Delete(user.UserId, user.Service, user.IsRefresh))
+	assert.Error(t, rep.Delete(user.UserId, user.Service, user.IsRefresh))
 }
 
 func TestOauthTokenRepository_Create(t *testing.T) {
+	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	defer teardown("oauth")
 	rep := OauthTokenRepository{
-		Tokens: make([]*model.OauthToken, 0),
+		Tokens: db,
 	}
-	model.NewOauthToken(t)
-
 	assert.NoError(t, rep.Create(model.NewOauthToken(t)))
 	assert.Error(t, rep.Create(model.NewOauthToken(t)))
 	refresh := model.NewOauthToken(t)
@@ -96,33 +106,37 @@ func TestOauthTokenRepository_Create(t *testing.T) {
 }
 
 func TestOauthTokenRepository_Update(t *testing.T) {
+	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	defer teardown("oauth")
 	rep := OauthTokenRepository{
-		Tokens: make([]*model.OauthToken, 0),
+		Tokens: db,
 	}
-	rep.Tokens = append(rep.Tokens, model.NewOauthToken(t))
+	require.NoError(t, rep.Create(model.NewOauthToken(t)))
 	assert.NoError(t, rep.Update(model.NewOauthToken(t)))
 	refresh := model.NewOauthToken(t)
 	refresh.IsRefresh = true
-	assert.Error(t, rep.Update(refresh))
+	require.Error(t, rep.Update(refresh))
 	other := model.NewOauthToken(t)
 	other.UserId = "invalid"
 	assert.Error(t, rep.Update(other))
 }
 
 func TestOauthTokenRepository_FindByUserId(t *testing.T) {
+	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	defer teardown("oauth")
 	rep := OauthTokenRepository{
-		Tokens: make([]*model.OauthToken, 0),
+		Tokens: db,
 	}
-	rep.Tokens = append(rep.Tokens, model.NewOauthToken(t))
+	require.NoError(t, rep.Create(model.NewOauthToken(t)))
 	toks1, err := rep.FindByUserId(model.NewOauthToken(t).UserId)
 	assert.NoError(t, err)
 	assert.Equal(t, 1, len(toks1))
 	refresh := model.NewOauthToken(t)
 	refresh.IsRefresh = true
 	other := model.NewOauthToken(t)
-	other.Service = "Github"
-	rep.Tokens = append(rep.Tokens, refresh)
-	rep.Tokens = append(rep.Tokens, other)
+	other.Service = "github"
+	require.NoError(t, rep.Create(refresh))
+	require.NoError(t, rep.Create(other))
 	toks2, err := rep.FindByUserId(refresh.UserId)
 	assert.NoError(t, rep.Update(refresh))
 	assert.Equal(t, 3, len(toks2))
@@ -131,10 +145,12 @@ func TestOauthTokenRepository_FindByUserId(t *testing.T) {
 }
 
 func TestOauthTokenRepository_FindByUserIdAndService(t *testing.T) {
+	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	defer teardown("oauth")
 	rep := OauthTokenRepository{
-		Tokens: make([]*model.OauthToken, 0),
+		Tokens: db,
 	}
-	rep.Tokens = append(rep.Tokens, model.NewOauthToken(t))
+	require.NoError(t, rep.Create(model.NewOauthToken(t)))
 	toks1, err := rep.FindByUserIdAndService(model.NewOauthToken(t).UserId, model.NewOauthToken(t).Service)
 	assert.NoError(t, err)
 	assert.Equal(t, 1, len(toks1))
@@ -142,8 +158,8 @@ func TestOauthTokenRepository_FindByUserIdAndService(t *testing.T) {
 	refresh.IsRefresh = true
 	other := model.NewOauthToken(t)
 	other.Service = "github"
-	rep.Tokens = append(rep.Tokens, refresh)
-	rep.Tokens = append(rep.Tokens, other)
+	require.NoError(t, rep.Create(refresh))
+	require.NoError(t, rep.Create(other))
 	toks2, err := rep.FindByUserIdAndService(refresh.UserId, model.NewOauthToken(t).Service)
 	assert.NoError(t, rep.Update(refresh))
 	assert.Equal(t, 2, len(toks2))

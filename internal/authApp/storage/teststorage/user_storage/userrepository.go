@@ -27,8 +27,10 @@ func (r *UserRepository) Create(user *model.User) error {
 		_, ok = r.Users[user.Id]
 	}
 
-	if err := user.EncryptPassword(); err != nil {
-		return err
+	if len(user.Password) != 0 && len(user.EncryptedPassword) == 0 {
+		if err := user.EncryptPassword(); err != nil {
+			return err
+		}
 	}
 	user.Sanitize()
 	r.Users[user.Id] = user
@@ -73,7 +75,7 @@ func (r *UserRepository) FindByOauthID(serviceName string, id string) (*model.Us
 				return us, nil
 			}
 		}
-	case "gk":
+	case "vk":
 		for _, us := range r.Users {
 			if us.VkId == id {
 				return us, nil
@@ -91,8 +93,10 @@ func (r *UserRepository) Update(user *model.User) error {
 	if !ok {
 		return storage.ErrUserDoesNotExist
 	}
-	if err := user.EncryptPassword(); err != nil {
-		return err
+	if len(user.Password) != 0 && len(user.EncryptedPassword) == 0 {
+		if err := user.EncryptPassword(); err != nil {
+			return err
+		}
 	}
 	user.Sanitize()
 	r.Users[user.Id] = user

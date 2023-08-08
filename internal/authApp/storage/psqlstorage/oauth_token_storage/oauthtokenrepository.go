@@ -75,11 +75,11 @@ func (r *OauthTokenRepository) Update(token *model.OauthToken) error {
 	return nil
 }
 
-func (r *OauthTokenRepository) Delete(token *model.OauthToken) error {
+func (r *OauthTokenRepository) Delete(userId string, service string, isRefresh bool) error {
 	res, err := r.Tokens.Exec(`
 			DELETE FROM oauth
 			WHERE user_id = $1 AND service = $2 AND is_refresh = $3`,
-		token.UserId, token.Service, token.IsRefresh,
+		userId, service, isRefresh,
 	)
 	if err != nil {
 		return err

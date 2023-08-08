@@ -7,9 +7,9 @@ import (
 )
 
 type TwoFactorCode struct {
-	UserId       string
-	SecretKey    string
-	ReserveCodes []string
+	UserId       string   `db:"user_id"`
+	SecretKey    string   `db:"secret_key"`
+	ReserveCodes []string `db:"reserve_codes"`
 }
 
 func NewTwoFactorCode(id string) (*TwoFactorCode, image.Image, error) {

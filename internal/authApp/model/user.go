@@ -8,16 +8,16 @@ import (
 )
 
 type User struct {
-	Id                string
-	Email             string
+	Id                string `db:"id"`
+	Email             string `db:"email"`
 	Password          string
-	EncryptedPassword string
-	Enabled2FA        bool
+	EncryptedPassword string `db:"encrypted_password"`
+	Enabled2FA        bool   `db:"enabled2fa"`
 
-	GoogleId string
-	VkId     string
-	YandexId string
-	GithubId string
+	GoogleId string `db:"google_id"`
+	VkId     string `db:"vk_id"`
+	YandexId string `db:"yandex_id"`
+	GithubId string `db:"github_id"`
 }
 
 func (u *User) Validate() error {

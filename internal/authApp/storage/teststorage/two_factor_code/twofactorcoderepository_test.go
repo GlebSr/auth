@@ -11,10 +11,8 @@ func TestTwoFactorRepository_Create(t *testing.T) {
 		Codes: make(map[string]*model.TwoFactorCode),
 	}
 	code, _, _ := model.NewTwoFactorCode("user")
-	err := rep.Create(code)
-	assert.NoError(t, err)
-	err = rep.Create(code)
-	assert.Error(t, err)
+	assert.NoError(t, rep.Create(code))
+	assert.Error(t, rep.Create(code))
 }
 
 func TestTwoFactorRepository_Delete(t *testing.T) {
@@ -23,10 +21,8 @@ func TestTwoFactorRepository_Delete(t *testing.T) {
 	}
 	code, _, _ := model.NewTwoFactorCode("user")
 	rep.Codes["user"] = code
-	err := rep.Delete("user")
-	assert.NoError(t, err)
-	err = rep.Delete("user")
-	assert.Error(t, err)
+	assert.NoError(t, rep.Delete("user"))
+	assert.Error(t, rep.Delete("user"))
 }
 
 func TestTwoFactorRepository_FindByUserId(t *testing.T) {
