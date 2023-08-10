@@ -3,14 +3,13 @@ package psqlstorage
 import (
 	"auth/internal/authApp/config"
 	"auth/internal/authApp/model"
-	"auth/internal/authApp/storage/psqlstorage"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
 
 func TestOauthTokenRepository_Delete(t *testing.T) {
-	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	db, teardown := TestDB(t, config.TestDatabaseURL)
 	defer teardown("oauth")
 	rep := OauthTokenRepository{
 		Tokens: db,
@@ -80,7 +79,7 @@ func TestOauthTokenRepository_Delete(t *testing.T) {
 }
 
 func TestOauthTokenRepository_Delete2(t *testing.T) {
-	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	db, teardown := TestDB(t, config.TestDatabaseURL)
 	defer teardown("oauth")
 	rep := OauthTokenRepository{
 		Tokens: db,
@@ -92,7 +91,7 @@ func TestOauthTokenRepository_Delete2(t *testing.T) {
 }
 
 func TestOauthTokenRepository_Create(t *testing.T) {
-	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	db, teardown := TestDB(t, config.TestDatabaseURL)
 	defer teardown("oauth")
 	rep := OauthTokenRepository{
 		Tokens: db,
@@ -106,7 +105,7 @@ func TestOauthTokenRepository_Create(t *testing.T) {
 }
 
 func TestOauthTokenRepository_Update(t *testing.T) {
-	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	db, teardown := TestDB(t, config.TestDatabaseURL)
 	defer teardown("oauth")
 	rep := OauthTokenRepository{
 		Tokens: db,
@@ -122,7 +121,7 @@ func TestOauthTokenRepository_Update(t *testing.T) {
 }
 
 func TestOauthTokenRepository_FindByUserId(t *testing.T) {
-	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	db, teardown := TestDB(t, config.TestDatabaseURL)
 	defer teardown("oauth")
 	rep := OauthTokenRepository{
 		Tokens: db,
@@ -145,7 +144,7 @@ func TestOauthTokenRepository_FindByUserId(t *testing.T) {
 }
 
 func TestOauthTokenRepository_FindByUserIdAndService(t *testing.T) {
-	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	db, teardown := TestDB(t, config.TestDatabaseURL)
 	defer teardown("oauth")
 	rep := OauthTokenRepository{
 		Tokens: db,

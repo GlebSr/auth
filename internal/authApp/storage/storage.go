@@ -17,21 +17,21 @@ type TwoFactorStorage interface {
 }
 
 type Storage struct {
-	userStorage         UserStorage
-	refreshTokenStorage RefreshTokenStorage
-	authTokenStorage    OauthTokenStorage
-	twoFactorStorage    TwoFactorStorage
+	UserStorage         UserStorage
+	RefreshTokenStorage RefreshTokenStorage
+	OauthTokenStorage   OauthTokenStorage
+	TwoFactorStorage    TwoFactorStorage
 }
 
 func (s *Storage) User() UserRepository {
-	return s.userStorage.User()
+	return s.UserStorage.User()
 }
 func (s *Storage) RefreshToken() RefreshTokenRepository {
-	return s.refreshTokenStorage.RefreshToken()
+	return s.RefreshTokenStorage.RefreshToken()
 }
 func (s *Storage) OauthToken() OauthTokenRepository {
-	return s.authTokenStorage.OauthToken()
+	return s.OauthTokenStorage.OauthToken()
 }
 func (s *Storage) TwoFactorCode() TwoFactorRepository {
-	return s.twoFactorStorage.TwoFactorCode()
+	return s.TwoFactorStorage.TwoFactorCode()
 }

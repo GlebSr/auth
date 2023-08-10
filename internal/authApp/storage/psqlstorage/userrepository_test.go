@@ -3,14 +3,13 @@ package psqlstorage
 import (
 	"auth/internal/authApp/config"
 	"auth/internal/authApp/model"
-	"auth/internal/authApp/storage/psqlstorage"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
 
 func TestUserRepository_Create(t *testing.T) {
-	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	db, teardown := TestDB(t, config.TestDatabaseURL)
 	defer teardown("users")
 	rep := &UserRepository{
 		Users: db,
@@ -23,7 +22,7 @@ func TestUserRepository_Create(t *testing.T) {
 }
 
 func TestUserRepository_Delete(t *testing.T) {
-	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	db, teardown := TestDB(t, config.TestDatabaseURL)
 	defer teardown("users")
 	rep := &UserRepository{
 		Users: db,
@@ -36,7 +35,7 @@ func TestUserRepository_Delete(t *testing.T) {
 }
 
 func TestUserRepository_Update(t *testing.T) {
-	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	db, teardown := TestDB(t, config.TestDatabaseURL)
 	defer teardown("users")
 	rep := &UserRepository{
 		Users: db,
@@ -49,7 +48,7 @@ func TestUserRepository_Update(t *testing.T) {
 }
 
 func TestUserRepository_FindByEmail(t *testing.T) {
-	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	db, teardown := TestDB(t, config.TestDatabaseURL)
 	defer teardown("users")
 	rep := &UserRepository{
 		Users: db,
@@ -66,7 +65,7 @@ func TestUserRepository_FindByEmail(t *testing.T) {
 }
 
 func TestUserRepository_FindById(t *testing.T) {
-	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	db, teardown := TestDB(t, config.TestDatabaseURL)
 	defer teardown("users")
 	rep := &UserRepository{
 		Users: db,
@@ -83,7 +82,7 @@ func TestUserRepository_FindById(t *testing.T) {
 }
 
 func TestUserRepository_FindByOauthID(t *testing.T) {
-	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	db, teardown := TestDB(t, config.TestDatabaseURL)
 	defer teardown("users")
 	rep := &UserRepository{
 		Users: db,

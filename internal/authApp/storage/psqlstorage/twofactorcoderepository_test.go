@@ -3,14 +3,13 @@ package psqlstorage
 import (
 	"auth/internal/authApp/config"
 	"auth/internal/authApp/model"
-	"auth/internal/authApp/storage/psqlstorage"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
 
 func TestTwoFactorRepository_Create(t *testing.T) {
-	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	db, teardown := TestDB(t, config.TestDatabaseURL)
 	rep := &TwoFactorRepository{
 		Codes: db,
 	}
@@ -21,7 +20,7 @@ func TestTwoFactorRepository_Create(t *testing.T) {
 }
 
 func TestTwoFactorRepository_Delete(t *testing.T) {
-	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	db, teardown := TestDB(t, config.TestDatabaseURL)
 	rep := &TwoFactorRepository{
 		Codes: db,
 	}
@@ -33,7 +32,7 @@ func TestTwoFactorRepository_Delete(t *testing.T) {
 }
 
 func TestTwoFactorRepository_FindByUserId(t *testing.T) {
-	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	db, teardown := TestDB(t, config.TestDatabaseURL)
 	rep := &TwoFactorRepository{
 		Codes: db,
 	}

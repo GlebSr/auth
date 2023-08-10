@@ -3,7 +3,6 @@ package psqlstorage
 import (
 	"auth/internal/authApp/config"
 	"auth/internal/authApp/model"
-	"auth/internal/authApp/storage/psqlstorage"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"
@@ -11,7 +10,7 @@ import (
 )
 
 func TestRefreshTokenRepository_FindByToken(t *testing.T) {
-	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	db, teardown := TestDB(t, config.TestDatabaseURL)
 	defer teardown("refresh")
 	rep := RefreshTokenRepository{
 		Tokens: db,
@@ -29,7 +28,7 @@ func TestRefreshTokenRepository_FindByToken(t *testing.T) {
 }
 
 func TestRefreshTokenRepository_FindByUserId(t *testing.T) {
-	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	db, teardown := TestDB(t, config.TestDatabaseURL)
 	defer teardown("refresh")
 	rep := RefreshTokenRepository{
 		Tokens: db,
@@ -45,7 +44,7 @@ func TestRefreshTokenRepository_FindByUserId(t *testing.T) {
 }
 
 func TestRefreshTokenRepository_Create(t *testing.T) {
-	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	db, teardown := TestDB(t, config.TestDatabaseURL)
 	defer teardown("refresh")
 	rep := RefreshTokenRepository{
 		Tokens: db,
@@ -56,7 +55,7 @@ func TestRefreshTokenRepository_Create(t *testing.T) {
 }
 
 func TestRefreshTokenRepository_Delete(t *testing.T) {
-	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	db, teardown := TestDB(t, config.TestDatabaseURL)
 	defer teardown("refresh")
 	rep := RefreshTokenRepository{
 		Tokens: db,
@@ -68,7 +67,7 @@ func TestRefreshTokenRepository_Delete(t *testing.T) {
 }
 
 func TestRefreshTokenRepository_DeleteAll(t *testing.T) {
-	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	db, teardown := TestDB(t, config.TestDatabaseURL)
 	defer teardown("refresh")
 	rep := RefreshTokenRepository{
 		Tokens: db,
@@ -88,7 +87,7 @@ func TestRefreshTokenRepository_DeleteAll(t *testing.T) {
 }
 
 func TestRefreshTokenRepository_ClearExpired(t *testing.T) {
-	db, teardown := psqlstorage.TestDB(t, config.TestDatabaseURL)
+	db, teardown := TestDB(t, config.TestDatabaseURL)
 	defer teardown("refresh")
 	rep := RefreshTokenRepository{
 		Tokens: db,

@@ -1,10 +1,11 @@
 package main
 
 import (
-	"fmt"
+	"auth/internal/authApp/server"
 	_ "github.com/lib/pq"
+	"log"
 )
 
 func main() {
-	fmt.Print("hello world")
+	log.Fatal(server.Start())
 }
